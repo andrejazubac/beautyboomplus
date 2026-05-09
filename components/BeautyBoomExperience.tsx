@@ -17,6 +17,9 @@ const translations = {
   sr: {
     languageLabel: "SR",
     languageSwitch: "EN",
+    themeLabel: "Tema",
+    themeDark: "Tamna",
+    themeLight: "Svetla",
     nav: {
       transformations: "Transformacije",
       services: "Usluge",
@@ -101,6 +104,9 @@ const translations = {
   en: {
     languageLabel: "EN",
     languageSwitch: "SR",
+    themeLabel: "Theme",
+    themeDark: "Dark",
+    themeLight: "Light",
     nav: {
       transformations: "Signature transformations",
       services: "Services",
@@ -308,6 +314,11 @@ export default function BeautyBoomExperience() {
   }, [locale]);
 
   useEffect(() => {
+    document.documentElement.classList.remove("theme-light");
+    document.documentElement.classList.add("theme-dark");
+  }, []);
+
+  useEffect(() => {
     const media = window.matchMedia("(min-width: 901px)");
 
     const updateMode = () => {
@@ -455,14 +466,16 @@ export default function BeautyBoomExperience() {
               {copy.languageLabel}/{copy.languageSwitch}
             </button>
           </div>
-          <button
-            aria-label={`Switch language to ${copy.languageSwitch}`}
-            aria-pressed={locale === "en"}
-            className="text-rose md:hidden"
-            onClick={() => setLocale((current) => (current === "sr" ? "en" : "sr"))}
-          >
-            {copy.languageLabel}/{copy.languageSwitch}
-          </button>
+          <div className="flex items-center gap-4 md:hidden">
+            <button
+              aria-label={`Switch language to ${copy.languageSwitch}`}
+              aria-pressed={locale === "en"}
+              className="text-rose"
+              onClick={() => setLocale((current) => (current === "sr" ? "en" : "sr"))}
+            >
+              {copy.languageLabel}/{copy.languageSwitch}
+            </button>
+          </div>
         </nav>
 
         <section className="relative md:h-screen">
@@ -521,7 +534,7 @@ function ParallaxSalonLayer({ progress }: { progress: number }) {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,7,18,0.7),rgba(17,7,18,0.08)_45%,rgba(17,7,18,0.76))]" />
+        <div className="parallax-image-veil absolute inset-0" />
       </motion.div>
       <motion.div
         className="absolute left-[8vw] top-[22vh] h-72 w-72 rounded-full bg-rose/16 blur-3xl"
@@ -549,7 +562,7 @@ function HeroPanel({ onBook }: { onBook: () => void }) {
         priority
         className="object-cover opacity-80"
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_35%,rgba(243,161,200,0.08),transparent_24rem),linear-gradient(90deg,rgba(12,4,14,0.96),rgba(25,7,28,0.58)_42%,rgba(17,7,18,0.1)_100%)]" />
+      <div className="hero-overlay absolute inset-0" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
       <div className="relative z-10 flex min-h-screen items-end px-5 pb-12 pt-28 md:px-10 md:pb-16">
         <div className="max-w-[78rem]">
@@ -588,8 +601,8 @@ function TransformationsPanel() {
   const copy = useCopy();
 
   return (
-    <section id="transformations" className="panel bg-[linear-gradient(135deg,#160817,#37113a_55%,#130611)] px-5 py-24 md:px-14">
-      <div className="absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle,rgba(243,161,200,0.24),transparent_28rem)]" />
+    <section id="transformations" className="panel panel-transformations px-5 py-24 md:px-14">
+      <div className="transformation-glow absolute right-0 top-0 h-full w-1/2" />
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-10 md:grid-cols-[.8fr_1.2fr]">
         <Reveal>
           <span className="text-xs uppercase tracking-[0.42em] text-lilac">{copy.transformations.eyebrow}</span>
@@ -664,7 +677,7 @@ function StudioPanel() {
   const copy = useCopy();
 
   return (
-    <section id="studio" className="panel bg-[#170817] px-5 py-24 md:px-14">
+    <section id="studio" className="panel panel-studio px-5 py-24 md:px-14">
       <div className="absolute inset-8 border border-pearl/10" />
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[.8fr_1.2fr]">
         <Reveal>
@@ -694,7 +707,7 @@ function StudioPanel() {
               fill
               className="object-cover object-right"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,8,23,0.14),rgba(23,8,23,0.72))]" />
+            <div className="studio-image-veil absolute inset-0" />
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between border-t border-pearl/16 pt-5 text-xs uppercase tracking-[0.32em] text-pearl/66">
               <span>{copy.studio.captionLeft}</span>
               <span>{copy.studio.captionRight}</span>
@@ -776,7 +789,7 @@ function TestimonialsPanel() {
   const copy = useCopy();
 
   return (
-    <section className="panel bg-[linear-gradient(135deg,#260b29,#09030a)] px-5 py-24 md:px-14">
+    <section className="panel panel-testimonials px-5 py-24 md:px-14">
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-8 md:grid-cols-[.7fr_1.3fr]">
         <Reveal>
           <span className="text-xs uppercase tracking-[0.42em] text-lilac">{copy.testimonials.eyebrow}</span>
@@ -836,7 +849,7 @@ function BookingPanel() {
   const copy = useCopy();
 
   return (
-    <section id="booking" className="panel bg-[#100610] px-5 py-24 md:px-14">
+    <section id="booking" className="panel panel-booking px-5 py-24 md:px-14">
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[1fr_1fr]">
         <Reveal>
           <CinematicHeading
@@ -875,7 +888,7 @@ function FooterPanel() {
   const copy = useCopy();
 
   return (
-    <footer id="contact" className="panel bg-[linear-gradient(135deg,#090309,#2b0d2f)] px-5 py-24 md:px-14">
+    <footer id="contact" className="panel panel-footer px-5 py-24 md:px-14">
       <div className="relative flex min-h-[calc(100vh-12rem)] flex-col justify-between">
         <Reveal>
           <p className="text-xs uppercase tracking-[0.42em] text-lilac">{copy.footer.eyebrow}</p>
