@@ -44,12 +44,62 @@ const panelIds = [
 ];
 
 function Reveal({
-  children
+  children,
+  delay = 0,
+  className = ""
 }: {
   children: React.ReactNode;
   delay?: number;
+  className?: string;
 }) {
-  return <div>{children}</div>;
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 34, filter: "blur(10px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.9, delay, ease: [0.19, 1, 0.22, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function CinematicHeading({
+  as = "h2",
+  text,
+  className = ""
+}: {
+  as?: "h1" | "h2";
+  text: string;
+  className?: string;
+}) {
+  const Tag = as;
+  const words = text.split(" ");
+
+  return (
+    <Tag className={className} aria-label={text}>
+      {words.map((word, index) => (
+        <motion.span
+          key={`${word}-${index}`}
+          aria-hidden="true"
+          className="inline-block overflow-hidden align-baseline"
+        >
+          <motion.span
+            className="inline-block pr-[0.18em]"
+            initial={{ y: "112%", opacity: 0, rotate: 1.4, filter: "blur(8px)" }}
+            animate={{ y: "0%", opacity: 1, rotate: 0, filter: "blur(0px)" }}
+            transition={{
+              duration: 0.95,
+              delay: index * 0.055,
+              ease: [0.19, 1, 0.22, 1]
+            }}
+          >
+            {word}
+          </motion.span>
+        </motion.span>
+      ))}
+    </Tag>
+  );
 }
 
 export default function BeautyBoomExperience() {
@@ -313,10 +363,12 @@ function HeroPanel({ onBook }: { onBook: () => void }) {
             <p className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.42em] text-rose">
               <Sparkles size={15} /> Novi Sad beauty studio
             </p>
-            <h1 className="serif max-w-6xl text-balance text-[18vw] font-light leading-[0.78] tracking-normal text-pearl md:text-[12vw]">
-              Beauty Boom Plus
-            </h1>
-            <div className="mt-8 grid max-w-5xl gap-7 md:grid-cols-[1.1fr_.8fr] md:items-end">
+            <CinematicHeading
+              as="h1"
+              text="Beauty Boom Plus"
+              className="serif max-w-6xl text-balance text-[18vw] font-light leading-[0.78] tracking-normal text-pearl md:text-[12vw]"
+            />
+            <Reveal delay={0.18} className="mt-8 grid max-w-5xl gap-7 md:grid-cols-[1.1fr_.8fr] md:items-end">
               <p className="max-w-2xl text-lg leading-8 text-pearl/76 md:text-xl">
                 A glossy, feminine beauty destination by Tijana Marković,
                 designed for transformations that feel cinematic, intimate and
@@ -329,7 +381,7 @@ function HeroPanel({ onBook }: { onBook: () => void }) {
                 Book the glow
                 <ArrowUpRight className="transition group-hover:-translate-y-1 group-hover:translate-x-1" size={18} />
               </button>
-            </div>
+            </Reveal>
           </Reveal>
         </div>
       </div>
@@ -347,21 +399,29 @@ function TransformationsPanel() {
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-10 md:grid-cols-[.8fr_1.2fr]">
         <Reveal>
           <span className="text-xs uppercase tracking-[0.42em] text-lilac">Signature transformations</span>
-          <h2 className="serif mt-6 max-w-3xl text-6xl font-light leading-[0.88] text-pearl md:text-8xl">
-            Soft glamour, sharpened by precision.
-          </h2>
+          <CinematicHeading
+            text="Soft glamour, sharpened by precision."
+            className="serif mt-6 max-w-3xl text-6xl font-light leading-[0.88] text-pearl md:text-8xl"
+          />
         </Reveal>
         <Reveal delay={0.12}>
           <div className="grid gap-4 md:grid-cols-3">
             {["Radiant skin", "Sculpted eyes", "Polished finish"].map((item, index) => (
-              <div key={item} className="glass-line min-h-80 p-7">
+              <motion.div
+                key={item}
+                className="glass-line min-h-80 p-7 transition hover:-translate-y-2 hover:border-rose/36 hover:bg-pearl/10"
+                initial={{ opacity: 0, y: 42, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.32 }}
+                transition={{ duration: 0.78, delay: index * 0.09, ease: [0.19, 1, 0.22, 1] }}
+              >
                 <span className="serif text-7xl text-rose/70">0{index + 1}</span>
                 <h3 className="mt-14 text-2xl font-medium text-pearl">{item}</h3>
                 <p className="mt-4 leading-7 text-pearl/62">
                   Editorial beauty language translated into wearable confidence
                   for events, everyday rituals and personal reinvention.
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </Reveal>
@@ -375,9 +435,10 @@ function ServicesPanel() {
     <section id="services" className="panel px-5 py-24 md:px-14">
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[1fr_.95fr]">
         <Reveal>
-          <h2 className="serif text-6xl font-light leading-[0.9] text-pearl md:text-8xl">
-            Beauty services with a campaign-level finish.
-          </h2>
+          <CinematicHeading
+            text="Beauty services with a campaign-level finish."
+            className="serif text-6xl font-light leading-[0.9] text-pearl md:text-8xl"
+          />
           <p className="mt-8 max-w-xl text-lg leading-8 text-pearl/68">
             A focused menu for women who want the experience to feel calm, the
             result to feel polished, and the atmosphere to feel quietly rare.
@@ -385,11 +446,18 @@ function ServicesPanel() {
         </Reveal>
         <Reveal delay={0.1}>
           <div className="divide-y divide-pearl/12 border-y border-pearl/12">
-            {services.map((service) => (
-              <div key={service} className="group flex items-center justify-between py-6">
+            {services.map((service, index) => (
+              <motion.div
+                key={service}
+                className="group flex items-center justify-between py-6"
+                initial={{ opacity: 0, x: 44 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: false, amount: 0.4 }}
+                transition={{ duration: 0.72, delay: index * 0.055, ease: [0.19, 1, 0.22, 1] }}
+              >
                 <span className="serif text-4xl text-pearl transition group-hover:text-rose">{service}</span>
                 <Wand2 className="text-lilac/70 transition group-hover:rotate-12 group-hover:text-rose" />
-              </div>
+              </motion.div>
             ))}
           </div>
         </Reveal>
@@ -404,7 +472,11 @@ function StudioPanel() {
       <div className="absolute inset-8 border border-pearl/10" />
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[.8fr_1.2fr]">
         <Reveal>
-          <div className="glass-line max-w-md p-8">
+          <motion.div
+            className="glass-line max-w-md p-8"
+            whileHover={{ y: -8, scale: 1.015 }}
+            transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
+          >
             <p className="text-xs uppercase tracking-[0.38em] text-rose">Owner</p>
             <h2 className="serif mt-5 text-6xl font-light text-pearl">Tijana Marković</h2>
             <p className="mt-7 leading-8 text-pearl/68">
@@ -412,10 +484,16 @@ function StudioPanel() {
               feminine confidence. The feeling is personal, elevated and never
               rushed.
             </p>
-          </div>
+          </motion.div>
         </Reveal>
         <Reveal delay={0.1}>
-          <div className="relative h-[62vh] min-h-96 overflow-hidden">
+          <motion.div
+            className="relative h-[62vh] min-h-96 overflow-hidden"
+            initial={{ opacity: 0, clipPath: "inset(8% 12% 8% 12%)" }}
+            whileInView={{ opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }}
+            viewport={{ once: false, amount: 0.36 }}
+            transition={{ duration: 1.05, ease: [0.19, 1, 0.22, 1] }}
+          >
             <Image
               src="/beauty-boom-campaign.png"
               alt="Beauty Boom Plus glossy studio mood"
@@ -427,7 +505,7 @@ function StudioPanel() {
               <span>Private beauty studio</span>
               <span>Novi Sad</span>
             </div>
-          </div>
+          </motion.div>
         </Reveal>
       </div>
     </section>
@@ -440,9 +518,10 @@ function GalleryPanel() {
       <div className="relative min-h-[calc(100vh-12rem)]">
         <Reveal>
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <h2 className="serif max-w-4xl text-6xl font-light leading-[0.9] text-pearl md:text-8xl">
-              The feed should feel like a beauty magazine.
-            </h2>
+            <CinematicHeading
+              text="The feed should feel like a beauty magazine."
+              className="serif max-w-4xl text-6xl font-light leading-[0.9] text-pearl md:text-8xl"
+            />
             <a href="https://www.instagram.com/" className="inline-flex w-fit items-center gap-3 text-sm uppercase tracking-[0.28em] text-rose">
               <Instagram size={18} /> Instagram
             </a>
@@ -453,7 +532,8 @@ function GalleryPanel() {
             <motion.div
               key={item}
               initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.22 }}
               transition={{ delay: index * 0.05, duration: 0.7 }}
               className="group relative aspect-[3/4] overflow-hidden bg-plum"
             >
@@ -484,9 +564,10 @@ function BlowdryRevealPanel() {
           <p className="text-xs uppercase tracking-[0.42em] text-rose/80">
             Beauty in motion
           </p>
-          <h2 className="serif mt-5 text-5xl font-light leading-[0.88] text-pearl md:text-7xl">
-            Salon air, silk movement, rose light.
-          </h2>
+          <CinematicHeading
+            text="Salon air, silk movement, rose light."
+            className="serif mt-5 text-5xl font-light leading-[0.88] text-pearl md:text-7xl"
+          />
         </div>
       </div>
     </section>
@@ -499,21 +580,26 @@ function TestimonialsPanel() {
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-8 md:grid-cols-[.7fr_1.3fr]">
         <Reveal>
           <span className="text-xs uppercase tracking-[0.42em] text-lilac">Client notes</span>
-          <h2 className="serif mt-6 text-6xl font-light leading-[0.9] text-pearl md:text-8xl">
-            Quiet proof, glowing after.
-          </h2>
+          <CinematicHeading
+            text="Quiet proof, glowing after."
+            className="serif mt-6 text-6xl font-light leading-[0.9] text-pearl md:text-8xl"
+          />
         </Reveal>
         <div className="grid gap-5">
           {testimonials.map((quote, index) => (
             <Reveal key={quote} delay={index * 0.08}>
-              <blockquote className="glass-line p-8">
+              <motion.blockquote
+                className="glass-line p-8"
+                whileHover={{ x: -10, borderColor: "rgba(243, 161, 200, 0.36)" }}
+                transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
+              >
                 <div className="mb-8 flex gap-2 text-rose">
                   {Array.from({ length: 5 }).map((_, starIndex) => (
                     <Star key={starIndex} size={15} fill="currentColor" />
                   ))}
                 </div>
                 <p className="serif text-3xl leading-tight text-pearl md:text-5xl">"{quote}"</p>
-              </blockquote>
+              </motion.blockquote>
             </Reveal>
           ))}
         </div>
@@ -531,9 +617,10 @@ function ExperiencePanel() {
           <p className="mx-auto mb-8 max-w-xl text-xs uppercase tracking-[0.42em] text-rose">
             The luxury beauty experience
           </p>
-          <h2 className="serif mx-auto max-w-6xl text-7xl font-light leading-[0.84] text-pearl md:text-[9rem]">
-            Come in for a service. Leave with a different posture.
-          </h2>
+          <CinematicHeading
+            text="Come in for a service. Leave with a different posture."
+            className="serif mx-auto max-w-6xl text-7xl font-light leading-[0.84] text-pearl md:text-[9rem]"
+          />
           <p className="mx-auto mt-9 max-w-2xl text-lg leading-8 text-pearl/66">
             The space is atmospheric, the pace is composed, and every detail is
             shaped around the feeling of being beautifully taken care of.
@@ -549,12 +636,19 @@ function BookingPanel() {
     <section id="booking" className="panel bg-[#100610] px-5 py-24 md:px-14">
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[1fr_1fr]">
         <Reveal>
-          <h2 className="serif text-7xl font-light leading-[0.85] text-pearl md:text-9xl">
-            Reserve your glow.
-          </h2>
+          <CinematicHeading
+            text="Reserve your glow."
+            className="serif text-7xl font-light leading-[0.85] text-pearl md:text-9xl"
+          />
         </Reveal>
         <Reveal delay={0.12}>
-          <div className="glass-line p-8 md:p-10">
+          <motion.div
+            className="glass-line p-8 md:p-10"
+            initial={{ opacity: 0, y: 34, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: false, amount: 0.4 }}
+            transition={{ duration: 0.9, delay: 0.12, ease: [0.19, 1, 0.22, 1] }}
+          >
             <p className="text-lg leading-8 text-pearl/72">
               Book a private appointment at Beauty Boom Plus in Novi Sad and
               step into a softer, more polished version of your beauty ritual.
@@ -568,7 +662,7 @@ function BookingPanel() {
                 <MapPin size={18} /> Novi Sad, Serbia
               </a>
             </div>
-          </div>
+          </motion.div>
         </Reveal>
       </div>
     </section>
@@ -581,9 +675,10 @@ function FooterPanel() {
       <div className="relative flex min-h-[calc(100vh-12rem)] flex-col justify-between">
         <Reveal>
           <p className="text-xs uppercase tracking-[0.42em] text-lilac">Beauty Boom Plus</p>
-          <h2 className="serif mt-8 max-w-5xl text-7xl font-light leading-[0.84] text-pearl md:text-[10rem]">
-            Feminine beauty, made cinematic.
-          </h2>
+          <CinematicHeading
+            text="Feminine beauty, made cinematic."
+            className="serif mt-8 max-w-5xl text-7xl font-light leading-[0.84] text-pearl md:text-[10rem]"
+          />
         </Reveal>
         <div className="mt-16 grid gap-6 border-t border-pearl/12 pt-8 text-sm uppercase tracking-[0.24em] text-pearl/60 md:grid-cols-4">
           <span>Owner: Tijana Marković</span>
