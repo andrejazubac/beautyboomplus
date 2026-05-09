@@ -66,7 +66,44 @@ const translations = {
     gallery: {
       title: "Objave treba da deluju kao magazin lepote.",
       instagram: "Instagram",
-      items: ["Sjaj", "Kontura", "Uglađenost", "Ritual", "Svila", "Cvetanje"]
+      items: [
+        {
+          label: "Pramenovi",
+          context: "Meki prelazi i dimenzija kose",
+          image: "/beauty-boom-blowdry.png",
+          position: "42% center"
+        },
+        {
+          label: "Boja",
+          context: "Sjajna nijansa i salonska završnica",
+          image: "/beauty-boom-campaign.png",
+          position: "34% center"
+        },
+        {
+          label: "Feniranje",
+          context: "Pokret, volumen i uredna forma",
+          image: "/beauty-boom-blowdry.png",
+          position: "58% center"
+        },
+        {
+          label: "Sjaj",
+          context: "Zdrav izgled i uglađena tekstura",
+          image: "/beauty-boom-campaign.png",
+          position: "52% center"
+        },
+        {
+          label: "Šminka",
+          context: "Mekani glamur za događaje",
+          image: "/beauty-boom-campaign.png",
+          position: "44% center"
+        },
+        {
+          label: "Nega",
+          context: "Rituali koji ostavljaju kosu svilenom",
+          image: "/beauty-boom-blowdry.png",
+          position: "68% center"
+        }
+      ]
     },
     blowdry: {
       eyebrow: "Lepota u pokretu",
@@ -153,7 +190,44 @@ const translations = {
     gallery: {
       title: "The feed should feel like a beauty magazine.",
       instagram: "Instagram",
-      items: ["Glow", "Contour", "Polish", "Ritual", "Silk", "Bloom"]
+      items: [
+        {
+          label: "Highlights",
+          context: "Soft transitions and dimensional hair",
+          image: "/beauty-boom-blowdry.png",
+          position: "42% center"
+        },
+        {
+          label: "Color",
+          context: "Glossy tone and salon finish",
+          image: "/beauty-boom-campaign.png",
+          position: "34% center"
+        },
+        {
+          label: "Blowout",
+          context: "Movement, volume and polished shape",
+          image: "/beauty-boom-blowdry.png",
+          position: "58% center"
+        },
+        {
+          label: "Glow",
+          context: "Healthy shine and refined texture",
+          image: "/beauty-boom-campaign.png",
+          position: "52% center"
+        },
+        {
+          label: "Makeup",
+          context: "Soft glamour for special moments",
+          image: "/beauty-boom-campaign.png",
+          position: "44% center"
+        },
+        {
+          label: "Care",
+          context: "Rituals that leave hair feeling silky",
+          image: "/beauty-boom-blowdry.png",
+          position: "68% center"
+        }
+      ]
     },
     blowdry: {
       eyebrow: "Beauty in motion",
@@ -207,6 +281,8 @@ const panelIds = [
   "booking",
   "contact"
 ];
+
+const instagramUrl = "https://www.instagram.com/beauty_boom_plus/";
 
 function Reveal({
   children,
@@ -731,7 +807,12 @@ function GalleryPanel() {
               text={copy.gallery.title}
               className="serif max-w-4xl text-6xl font-light leading-[0.9] text-pearl md:text-8xl"
             />
-            <a href="https://www.instagram.com/" className="inline-flex w-fit items-center gap-3 text-sm uppercase tracking-[0.28em] text-rose">
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-fit items-center gap-3 text-sm uppercase tracking-[0.28em] text-rose"
+            >
               <Instagram size={18} /> {copy.gallery.instagram}
             </a>
           </div>
@@ -739,22 +820,36 @@ function GalleryPanel() {
         <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-6">
           {copy.gallery.items.map((item, index) => (
             <motion.div
-              key={item}
+              key={item.label}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.22 }}
               transition={{ delay: index * 0.05, duration: 0.7 }}
               className="group relative aspect-[3/4] overflow-hidden bg-plum"
             >
-              <Image
-                src="/beauty-boom-campaign.png"
-                alt={`${item} beauty editorial tile`}
-                fill
-                className="object-cover transition duration-700 group-hover:scale-110"
-                style={{ objectPosition: `${25 + index * 10}% center` }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-rose/10" />
-              <span className="absolute bottom-4 left-4 serif text-3xl text-pearl">{item}</span>
+              <a
+                href={instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${copy.gallery.instagram}: ${item.label}`}
+                className="block h-full"
+              >
+                <Image
+                  src={item.image}
+                  alt={`${item.label} - Beauty Boom Plus Instagram primer`}
+                  fill
+                  className="object-cover transition duration-700 group-hover:scale-110"
+                  style={{ objectPosition: item.position }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/84 via-transparent to-rose/10" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="serif block text-3xl text-pearl">{item.label}</span>
+                  <span className="mt-2 block text-[11px] uppercase leading-5 tracking-[0.22em] text-pearl/64">
+                    {item.context}
+                  </span>
+                </div>
+                <ArrowUpRight className="absolute right-4 top-4 text-pearl/60 transition group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-rose" size={18} />
+              </a>
             </motion.div>
           ))}
         </div>
