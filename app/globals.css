@@ -73,13 +73,21 @@ a {
   flex: 0 0 100vw;
   position: relative;
   overflow: hidden;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  z-index: 10;
+}
+
+.reveal-gap {
+  z-index: 8;
+  background:
+    linear-gradient(90deg, rgba(17, 7, 18, 0.74), rgba(17, 7, 18, 0.1) 45%, rgba(17, 7, 18, 0.72)),
+    radial-gradient(circle at 55% 50%, rgba(243, 161, 200, 0.12), transparent 22rem);
 }
 
 .horizontal-track {
   overscroll-behavior: contain;
   scrollbar-width: none;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .horizontal-track::-webkit-scrollbar {

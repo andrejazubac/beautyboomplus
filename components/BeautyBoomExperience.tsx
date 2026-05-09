@@ -36,6 +36,7 @@ const panelIds = [
   "services",
   "studio",
   "gallery",
+  "blowdry",
   "testimonials",
   "experience",
   "booking",
@@ -54,7 +55,10 @@ function Reveal({
 export default function BeautyBoomExperience() {
   const [activePanel, setActivePanel] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  const targetScroll = useRef(0);
+  const animationFrame = useRef<number | null>(null);
 
   const goToPanel = useCallback(
     (index: number) => {
@@ -69,9 +73,11 @@ export default function BeautyBoomExperience() {
       }
 
       setActivePanel(nextIndex);
-      trackRef.current?.scrollTo({
-        left: nextIndex * window.innerWidth,
-        behavior: "smooth"
+      targetScroll.current = nextIndex * window.innerWidth;
+      document.getElementById(panelIds[nextIndex])?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start"
       });
     },
     [isDesktop]
@@ -96,12 +102,22 @@ export default function BeautyBoomExperience() {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (animationFrame.current) {
+        cancelAnimationFrame(animationFrame.current);
+      }
+    };
+  }, []);
+
   const changePanel = useCallback((direction: 1 | -1) => {
     setActivePanel((current) => {
       const nextIndex = Math.max(0, Math.min(panelIds.length - 1, current + direction));
-      trackRef.current?.scrollTo({
-        left: nextIndex * window.innerWidth,
-        behavior: "smooth"
+      targetScroll.current = nextIndex * window.innerWidth;
+      document.getElementById(panelIds[nextIndex])?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start"
       });
       return nextIndex;
     });
@@ -129,7 +145,7 @@ export default function BeautyBoomExperience() {
   }, [changePanel, isDesktop]);
 
   const handleWheel = (event: React.WheelEvent<HTMLElement>) => {
-    if (!isDesktop) {
+    if (!isDesktop || !trackRef.current) {
       return;
     }
 
@@ -140,10 +156,37 @@ export default function BeautyBoomExperience() {
       return;
     }
 
-    trackRef.current?.scrollBy({
-      left: delta * 1.25,
-      behavior: "smooth"
-    });
+    const track = trackRef.current;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    targetScroll.current = Math.max(
+      0,
+      Math.min(maxScroll, targetScroll.current + delta * 0.95)
+    );
+
+    if (animationFrame.current) {
+      return;
+    }
+
+    const glide = () => {
+      if (!trackRef.current) {
+        animationFrame.current = null;
+        return;
+      }
+
+      const current = trackRef.current.scrollLeft;
+      const next = current + (targetScroll.current - current) * 0.11;
+      trackRef.current.scrollLeft = Math.abs(targetScroll.current - next) < 0.35
+        ? targetScroll.current
+        : next;
+
+      if (Math.abs(targetScroll.current - trackRef.current.scrollLeft) > 0.35) {
+        animationFrame.current = requestAnimationFrame(glide);
+      } else {
+        animationFrame.current = null;
+      }
+    };
+
+    animationFrame.current = requestAnimationFrame(glide);
   };
 
   const handleTrackScroll = () => {
@@ -151,7 +194,15 @@ export default function BeautyBoomExperience() {
       return;
     }
 
-    setActivePanel(Math.round(trackRef.current.scrollLeft / window.innerWidth));
+    const maxScroll = trackRef.current.scrollWidth - trackRef.current.clientWidth;
+    const progress = maxScroll > 0 ? trackRef.current.scrollLeft / maxScroll : 0;
+
+    if (!animationFrame.current) {
+      targetScroll.current = trackRef.current.scrollLeft;
+    }
+
+    setScrollProgress(progress);
+    setActivePanel(Math.max(0, Math.min(panelIds.length - 1, Math.round(trackRef.current.scrollLeft / window.innerWidth))));
   };
 
   return (
@@ -159,6 +210,7 @@ export default function BeautyBoomExperience() {
       className="relative overflow-hidden md:h-screen"
       onWheel={handleWheel}
     >
+      <ParallaxSalonLayer progress={scrollProgress} />
       <div className="noise" />
       <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-5 text-[11px] uppercase tracking-[0.34em] text-pearl/72 md:px-10">
         <button onClick={() => goToPanel(0)} className="font-semibold text-pearl">
@@ -168,7 +220,7 @@ export default function BeautyBoomExperience() {
           <button onClick={() => goToPanel(1)}>Signature transformations</button>
           <button onClick={() => goToPanel(2)}>Services</button>
           <button onClick={() => goToPanel(3)}>Studio</button>
-          <button onClick={() => goToPanel(7)}>Booking</button>
+          <button onClick={() => goToPanel(8)}>Booking</button>
         </div>
       </nav>
 
@@ -176,16 +228,17 @@ export default function BeautyBoomExperience() {
         <div
           ref={trackRef}
           onScroll={handleTrackScroll}
-          className="horizontal-track h-screen overflow-x-auto overflow-y-hidden scroll-smooth md:snap-x md:snap-mandatory max-[900px]:h-auto max-[900px]:overflow-visible"
+          className="horizontal-track h-screen overflow-x-auto overflow-y-hidden max-[900px]:h-auto max-[900px]:overflow-visible"
         >
           <motion.div
-            className="flex h-screen w-[900vw] will-change-transform max-[900px]:block max-[900px]:h-auto max-[900px]:w-full max-[900px]:!transform-none"
+            className="flex h-screen w-[960vw] max-[900px]:block max-[900px]:h-auto max-[900px]:w-full max-[900px]:!transform-none"
           >
-            <HeroPanel onBook={() => goToPanel(7)} />
+            <HeroPanel onBook={() => goToPanel(8)} />
             <TransformationsPanel />
             <ServicesPanel />
             <StudioPanel />
             <GalleryPanel />
+            <BlowdryRevealPanel />
             <TestimonialsPanel />
             <ExperiencePanel />
             <BookingPanel />
@@ -205,6 +258,40 @@ export default function BeautyBoomExperience() {
         </div>
       </section>
     </main>
+  );
+}
+
+function ParallaxSalonLayer({ progress }: { progress: number }) {
+  return (
+    <div className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden md:block">
+      <motion.div
+        className="absolute right-[8vw] top-[13vh] h-[72vh] w-[30vw] overflow-hidden opacity-80"
+        animate={{
+          x: `${-progress * 18}vw`,
+          y: `${Math.sin(progress * Math.PI) * 2}vh`
+        }}
+        transition={{ duration: 0.25, ease: "linear" }}
+      >
+        <Image
+          src="/beauty-boom-blowdry.png"
+          alt=""
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,7,18,0.7),rgba(17,7,18,0.08)_45%,rgba(17,7,18,0.76))]" />
+      </motion.div>
+      <motion.div
+        className="absolute left-[8vw] top-[22vh] h-72 w-72 rounded-full bg-rose/16 blur-3xl"
+        animate={{ x: `${progress * 20}vw`, opacity: 0.32 + progress * 0.2 }}
+        transition={{ duration: 0.25, ease: "linear" }}
+      />
+      <motion.div
+        className="absolute bottom-[12vh] right-[22vw] h-96 w-96 rounded-full bg-lilac/12 blur-3xl"
+        animate={{ x: `${-progress * 28}vw` }}
+        transition={{ duration: 0.25, ease: "linear" }}
+      />
+    </div>
   );
 }
 
@@ -381,6 +468,25 @@ function GalleryPanel() {
               <span className="absolute bottom-4 left-4 serif text-3xl text-pearl">{item}</span>
             </motion.div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BlowdryRevealPanel() {
+  return (
+    <section id="blowdry" className="reveal-gap relative h-screen flex-[0_0_60vw] overflow-hidden px-10 py-24 max-[900px]:hidden">
+      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-ink to-transparent" />
+      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-ink to-transparent" />
+      <div className="relative z-10 flex h-full items-end justify-end">
+        <div className="max-w-md border-r border-rose/28 pr-7 text-right">
+          <p className="text-xs uppercase tracking-[0.42em] text-rose/80">
+            Beauty in motion
+          </p>
+          <h2 className="serif mt-5 text-5xl font-light leading-[0.88] text-pearl md:text-7xl">
+            Salon air, silk movement, rose light.
+          </h2>
         </div>
       </div>
     </section>
