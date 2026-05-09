@@ -8,19 +8,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#110712",
-        plum: "#2a0b2f",
-        wine: "#4b123f",
-        rose: "#f3a1c8",
-        lilac: "#c7a0ff",
-        pearl: "#fff2fb"
+        ink: "rgb(var(--color-ink) / <alpha-value>)",
+        plum: "rgb(var(--color-plum) / <alpha-value>)",
+        wine: "rgb(var(--color-wine) / <alpha-value>)",
+        rose: "rgb(var(--color-rose) / <alpha-value>)",
+        lilac: "rgb(var(--color-lilac) / <alpha-value>)",
+        pearl: "rgb(var(--color-pearl) / <alpha-value>)"
       },
       fontFamily: {
         display: ["Cormorant Garamond", "Bodoni 72", "Didot", "Georgia", "serif"],
         sans: ["Inter", "Satoshi", "Avenir Next", "Segoe UI", "sans-serif"]
       },
       boxShadow: {
-        bloom: "0 0 80px rgba(243, 161, 200, 0.24)"
+        bloom: "0 0 80px rgb(var(--color-rose) / 0.24)"
       }
     }
   },

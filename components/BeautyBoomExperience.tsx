@@ -11,24 +11,189 @@ import {
   Star,
   Wand2
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
-const services = [
-  "Hair styling",
-  "Makeup",
-  "Brows & lashes",
-  "Facial rituals",
-  "Nails",
-  "Beauty prep"
-];
+const translations = {
+  sr: {
+    languageLabel: "SR",
+    languageSwitch: "EN",
+    themeLabel: "Tema",
+    themeDark: "Tamna",
+    themeLight: "Svetla",
+    nav: {
+      transformations: "Transformacije",
+      services: "Usluge",
+      studio: "Studio",
+      booking: "Zakazivanje"
+    },
+    hero: {
+      eyebrow: "Studio lepote u Novom Sadu",
+      title: "Beauty Boom Plus",
+      body: "Sofisticirana, ženstvena destinacija lepote koju vodi Tijana Marković, osmišljena za transformacije koje deluju filmski, intimno i istinski luksuzno.",
+      cta: "Zakaži tretman",
+      scroll: "Pomeraj u stranu"
+    },
+    transformations: {
+      eyebrow: "Prepoznatljive transformacije",
+      title: "Meki glamur, oblikovan preciznošću.",
+      items: [
+        {
+          title: "Blještav ten",
+          body: "Estetika modnog editorijala prevedena u nosivo samopouzdanje za događaje, svakodnevne rituale i ličnu promenu."
+        },
+        {
+          title: "Oblikovan pogled",
+          body: "Preciznost, dubina i mekani glamur koji naglašava lice bez osećaja težine."
+        },
+        {
+          title: "Uglancana završnica",
+          body: "Završni detalj koji izgleda luksuzno, smireno i spremno za kameru."
+        }
+      ]
+    },
+    services: {
+      title: "Usluge lepote sa završnicom dostojnom kampanje.",
+      body: "Pažljivo odabran meni za žene koje žele mirno iskustvo, uglađen rezultat i atmosferu tihog luksuza.",
+      items: ["Frizura i feniranje", "Šminkanje", "Obrve i trepavice", "Rituali za lice", "Nokti", "Priprema za događaje"]
+    },
+    studio: {
+      eyebrow: "Vlasnica",
+      owner: "Tijana Marković",
+      body: "Studio vodi istančan osećaj za proporciju, sjaj i ženstveno samopouzdanje. Iskustvo je lično, uzvišeno i nikada užurbano.",
+      captionLeft: "Privatni studio lepote",
+      captionRight: "Novi Sad"
+    },
+    gallery: {
+      title: "Objave treba da deluju kao magazin lepote.",
+      instagram: "Instagram",
+      items: ["Sjaj", "Kontura", "Uglađenost", "Ritual", "Svila", "Cvetanje"]
+    },
+    blowdry: {
+      eyebrow: "Lepota u pokretu",
+      title: "Salonski vazduh, pokret svile, ružičasta svetlost."
+    },
+    testimonials: {
+      eyebrow: "Utisci klijentkinja",
+      title: "Tihi dokaz, sjaj koji ostaje.",
+      items: [
+        "Mesto koje deluje privatno, uglađeno i veoma ženstveno. Svaki detalj je promišljen.",
+        "Beauty Boom Plus je učinio da moj termin izgleda kao prava transformacija iz editorijala.",
+        "Tijana ima retku smirenost i preciznost. Izlaziš sa osećajem da izgledaš luksuznije."
+      ]
+    },
+    experience: {
+      eyebrow: "Luksuzno iskustvo lepote",
+      title: "Dođi na tretman. Izađi sa drugačijim držanjem.",
+      body: "Prostor je atmosferičan, tempo je miran, a svaki detalj je oblikovan oko osećaja da je neko zaista preuzeo brigu o tvojoj lepoti."
+    },
+    booking: {
+      title: "Rezerviši svoj sjaj.",
+      body: "Zakaži privatni termin u Beauty Boom Plus u Novom Sadu i uđi u mekšu, uglađeniju verziju svog rituala lepote.",
+      cta: "Zakaži termin",
+      location: "Novi Sad, Srbija"
+    },
+    footer: {
+      eyebrow: "Beauty Boom Plus",
+      title: "Ženstvena lepota, oblikovana filmski.",
+      owner: "Vlasnica: Tijana Marković",
+      location: "Novi Sad, Srbija",
+      glow: "Sjaj spreman za fotografiju",
+      appointment: "Isključivo po zakazivanju"
+    }
+  },
+  en: {
+    languageLabel: "EN",
+    languageSwitch: "SR",
+    themeLabel: "Theme",
+    themeDark: "Dark",
+    themeLight: "Light",
+    nav: {
+      transformations: "Signature transformations",
+      services: "Services",
+      studio: "Studio",
+      booking: "Booking"
+    },
+    hero: {
+      eyebrow: "Novi Sad beauty studio",
+      title: "Beauty Boom Plus",
+      body: "A glossy, feminine beauty destination by Tijana Marković, designed for transformations that feel cinematic, intimate and unmistakably premium.",
+      cta: "Book the glow",
+      scroll: "Scroll sideways"
+    },
+    transformations: {
+      eyebrow: "Signature transformations",
+      title: "Soft glamour, sharpened by precision.",
+      items: [
+        {
+          title: "Radiant skin",
+          body: "Editorial beauty language translated into wearable confidence for events, everyday rituals and personal reinvention."
+        },
+        {
+          title: "Sculpted eyes",
+          body: "Precision, depth and soft glam that frames the face without feeling heavy."
+        },
+        {
+          title: "Polished finish",
+          body: "A final touch that feels expensive, composed and ready for the camera."
+        }
+      ]
+    },
+    services: {
+      title: "Beauty services with a campaign-level finish.",
+      body: "A focused menu for women who want the experience to feel calm, the result to feel polished, and the atmosphere to feel quietly rare.",
+      items: ["Hair styling", "Makeup", "Brows & lashes", "Facial rituals", "Nails", "Beauty prep"]
+    },
+    studio: {
+      eyebrow: "Owner",
+      owner: "Tijana Marković",
+      body: "The studio is led with a refined eye for proportion, glow and feminine confidence. The feeling is personal, elevated and never rushed.",
+      captionLeft: "Private beauty studio",
+      captionRight: "Novi Sad"
+    },
+    gallery: {
+      title: "The feed should feel like a beauty magazine.",
+      instagram: "Instagram",
+      items: ["Glow", "Contour", "Polish", "Ritual", "Silk", "Bloom"]
+    },
+    blowdry: {
+      eyebrow: "Beauty in motion",
+      title: "Salon air, silk movement, rose light."
+    },
+    testimonials: {
+      eyebrow: "Client notes",
+      title: "Quiet proof, glowing after.",
+      items: [
+        "A place that feels private, polished and very feminine. Every detail feels considered.",
+        "Beauty Boom Plus made my appointment feel like a full editorial transformation.",
+        "Tijana has that rare calm precision. You leave feeling expensive."
+      ]
+    },
+    experience: {
+      eyebrow: "The luxury beauty experience",
+      title: "Come in for a service. Leave with a different posture.",
+      body: "The space is atmospheric, the pace is composed, and every detail is shaped around the feeling of being beautifully taken care of."
+    },
+    booking: {
+      title: "Reserve your glow.",
+      body: "Book a private appointment at Beauty Boom Plus in Novi Sad and step into a softer, more polished version of your beauty ritual.",
+      cta: "Book appointment",
+      location: "Novi Sad, Serbia"
+    },
+    footer: {
+      eyebrow: "Beauty Boom Plus",
+      title: "Feminine beauty, made cinematic.",
+      owner: "Owner: Tijana Marković",
+      location: "Novi Sad, Serbia",
+      glow: "Instagram-ready glow",
+      appointment: "Appointments only"
+    }
+  }
+} as const;
 
-const gallery = ["Glow", "Contour", "Polish", "Ritual", "Silk", "Bloom"];
-
-const testimonials = [
-  "A place that feels private, polished and very feminine. Every detail feels considered.",
-  "Beauty Boom Plus made my appointment feel like a full editorial transformation.",
-  "Tijana has that rare calm precision. You leave feeling expensive."
-];
+type Locale = keyof typeof translations;
+type Copy = (typeof translations)[Locale];
+const CopyContext = createContext<Copy>(translations.sr);
+const useCopy = () => useContext(CopyContext);
 
 const panelIds = [
   "top",
@@ -103,12 +268,14 @@ function CinematicHeading({
 }
 
 export default function BeautyBoomExperience() {
+  const [locale, setLocale] = useState<Locale>("sr");
   const [activePanel, setActivePanel] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const targetScroll = useRef(0);
   const animationFrame = useRef<number | null>(null);
+  const copy = translations[locale];
 
   const goToPanel = useCallback(
     (index: number) => {
@@ -132,6 +299,24 @@ export default function BeautyBoomExperience() {
     },
     [isDesktop]
   );
+
+  useEffect(() => {
+    const savedLocale = window.localStorage.getItem("beauty-boom-locale");
+
+    if (savedLocale === "sr" || savedLocale === "en") {
+      setLocale(savedLocale);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    window.localStorage.setItem("beauty-boom-locale", locale);
+  }, [locale]);
+
+  useEffect(() => {
+    document.documentElement.classList.remove("theme-light");
+    document.documentElement.classList.add("theme-dark");
+  }, []);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 901px)");
@@ -256,58 +441,78 @@ export default function BeautyBoomExperience() {
   };
 
   return (
-    <main
-      className="relative overflow-hidden md:h-screen"
-      onWheel={handleWheel}
-    >
-      <ParallaxSalonLayer progress={scrollProgress} />
-      <div className="noise" />
-      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-5 text-[11px] uppercase tracking-[0.34em] text-pearl/72 md:px-10">
-        <button onClick={() => goToPanel(0)} className="font-semibold text-pearl">
-          Beauty Boom Plus
-        </button>
-        <div className="hidden gap-8 md:flex">
-          <button onClick={() => goToPanel(1)}>Signature transformations</button>
-          <button onClick={() => goToPanel(2)}>Services</button>
-          <button onClick={() => goToPanel(3)}>Studio</button>
-          <button onClick={() => goToPanel(8)}>Booking</button>
-        </div>
-      </nav>
-
-      <section className="relative md:h-screen">
-        <div
-          ref={trackRef}
-          onScroll={handleTrackScroll}
-          className="horizontal-track h-screen overflow-x-auto overflow-y-hidden max-[900px]:h-auto max-[900px]:overflow-visible"
-        >
-          <motion.div
-            className="flex h-screen w-[960vw] max-[900px]:block max-[900px]:h-auto max-[900px]:w-full max-[900px]:!transform-none"
-          >
-            <HeroPanel onBook={() => goToPanel(8)} />
-            <TransformationsPanel />
-            <ServicesPanel />
-            <StudioPanel />
-            <GalleryPanel />
-            <BlowdryRevealPanel />
-            <TestimonialsPanel />
-            <ExperiencePanel />
-            <BookingPanel />
-            <FooterPanel />
-          </motion.div>
-        </div>
-        <div className="fixed bottom-7 left-10 z-50 hidden items-center gap-5 text-[11px] uppercase tracking-[0.28em] text-pearl/48 md:flex">
-          <span>{String(activePanel + 1).padStart(2, "0")}</span>
-          <div className="h-px w-24 overflow-hidden bg-pearl/16">
-            <motion.div
-              className="h-full bg-rose"
-              animate={{ width: `${((activePanel + 1) / panelIds.length) * 100}%` }}
-              transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
-            />
+    <CopyContext.Provider value={copy}>
+      <main
+        className="relative overflow-hidden md:h-screen"
+        onWheel={handleWheel}
+      >
+        <ParallaxSalonLayer progress={scrollProgress} />
+        <div className="noise" />
+        <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-5 text-[11px] uppercase tracking-[0.34em] text-pearl/72 md:px-10">
+          <button onClick={() => goToPanel(0)} className="font-semibold text-pearl">
+            Beauty Boom Plus
+          </button>
+          <div className="hidden gap-8 md:flex">
+            <button onClick={() => goToPanel(1)}>{copy.nav.transformations}</button>
+            <button onClick={() => goToPanel(2)}>{copy.nav.services}</button>
+            <button onClick={() => goToPanel(3)}>{copy.nav.studio}</button>
+            <button onClick={() => goToPanel(8)}>{copy.nav.booking}</button>
+            <button
+              aria-label={`Switch language to ${copy.languageSwitch}`}
+              aria-pressed={locale === "en"}
+              className="text-rose"
+              onClick={() => setLocale((current) => (current === "sr" ? "en" : "sr"))}
+            >
+              {copy.languageLabel}/{copy.languageSwitch}
+            </button>
           </div>
-          <span>{String(panelIds.length).padStart(2, "0")}</span>
-        </div>
-      </section>
-    </main>
+          <div className="flex items-center gap-4 md:hidden">
+            <button
+              aria-label={`Switch language to ${copy.languageSwitch}`}
+              aria-pressed={locale === "en"}
+              className="text-rose"
+              onClick={() => setLocale((current) => (current === "sr" ? "en" : "sr"))}
+            >
+              {copy.languageLabel}/{copy.languageSwitch}
+            </button>
+          </div>
+        </nav>
+
+        <section className="relative md:h-screen">
+          <div
+            ref={trackRef}
+            onScroll={handleTrackScroll}
+            className="horizontal-track h-screen overflow-x-auto overflow-y-hidden max-[900px]:h-auto max-[900px]:overflow-visible"
+          >
+            <motion.div
+              className="flex h-screen w-[960vw] max-[900px]:block max-[900px]:h-auto max-[900px]:w-full max-[900px]:!transform-none"
+            >
+              <HeroPanel onBook={() => goToPanel(8)} />
+              <TransformationsPanel />
+              <ServicesPanel />
+              <StudioPanel />
+              <GalleryPanel />
+              <BlowdryRevealPanel />
+              <TestimonialsPanel />
+              <ExperiencePanel />
+              <BookingPanel />
+              <FooterPanel />
+            </motion.div>
+          </div>
+          <div className="fixed bottom-7 left-10 z-50 hidden items-center gap-5 text-[11px] uppercase tracking-[0.28em] text-pearl/48 md:flex">
+            <span>{String(activePanel + 1).padStart(2, "0")}</span>
+            <div className="h-px w-24 overflow-hidden bg-pearl/16">
+              <motion.div
+                className="h-full bg-rose"
+                animate={{ width: `${((activePanel + 1) / panelIds.length) * 100}%` }}
+                transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
+              />
+            </div>
+            <span>{String(panelIds.length).padStart(2, "0")}</span>
+          </div>
+        </section>
+      </main>
+    </CopyContext.Provider>
   );
 }
 
@@ -329,7 +534,7 @@ function ParallaxSalonLayer({ progress }: { progress: number }) {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,7,18,0.7),rgba(17,7,18,0.08)_45%,rgba(17,7,18,0.76))]" />
+        <div className="parallax-image-veil absolute inset-0" />
       </motion.div>
       <motion.div
         className="absolute left-[8vw] top-[22vh] h-72 w-72 rounded-full bg-rose/16 blur-3xl"
@@ -346,6 +551,8 @@ function ParallaxSalonLayer({ progress }: { progress: number }) {
 }
 
 function HeroPanel({ onBook }: { onBook: () => void }) {
+  const copy = useCopy();
+
   return (
     <section id="top" className="panel">
       <Image
@@ -355,30 +562,28 @@ function HeroPanel({ onBook }: { onBook: () => void }) {
         priority
         className="object-cover opacity-80"
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_35%,rgba(243,161,200,0.08),transparent_24rem),linear-gradient(90deg,rgba(12,4,14,0.96),rgba(25,7,28,0.58)_42%,rgba(17,7,18,0.1)_100%)]" />
+      <div className="hero-overlay absolute inset-0" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
       <div className="relative z-10 flex min-h-screen items-end px-5 pb-12 pt-28 md:px-10 md:pb-16">
         <div className="max-w-[78rem]">
           <Reveal>
             <p className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.42em] text-rose">
-              <Sparkles size={15} /> Novi Sad beauty studio
+              <Sparkles size={15} /> {copy.hero.eyebrow}
             </p>
             <CinematicHeading
               as="h1"
-              text="Beauty Boom Plus"
+              text={copy.hero.title}
               className="serif max-w-6xl text-balance text-[18vw] font-light leading-[0.78] tracking-normal text-pearl md:text-[12vw]"
             />
             <Reveal delay={0.18} className="mt-8 grid max-w-5xl gap-7 md:grid-cols-[1.1fr_.8fr] md:items-end">
               <p className="max-w-2xl text-lg leading-8 text-pearl/76 md:text-xl">
-                A glossy, feminine beauty destination by Tijana Marković,
-                designed for transformations that feel cinematic, intimate and
-                unmistakably premium.
+                {copy.hero.body}
               </p>
               <button
                 onClick={onBook}
                 className="group inline-flex w-fit items-center gap-4 rounded-full border border-rose/35 bg-pearl/10 px-6 py-4 text-sm uppercase tracking-[0.24em] text-pearl shadow-bloom backdrop-blur-2xl transition hover:border-rose hover:bg-rose/20"
               >
-                Book the glow
+                {copy.hero.cta}
                 <ArrowUpRight className="transition group-hover:-translate-y-1 group-hover:translate-x-1" size={18} />
               </button>
             </Reveal>
@@ -386,29 +591,31 @@ function HeroPanel({ onBook }: { onBook: () => void }) {
         </div>
       </div>
       <p className="absolute bottom-7 right-6 z-20 hidden text-xs uppercase tracking-[0.34em] text-pearl/50 md:block">
-        Scroll sideways
+        {copy.hero.scroll}
       </p>
     </section>
   );
 }
 
 function TransformationsPanel() {
+  const copy = useCopy();
+
   return (
-    <section id="transformations" className="panel bg-[linear-gradient(135deg,#160817,#37113a_55%,#130611)] px-5 py-24 md:px-14">
-      <div className="absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle,rgba(243,161,200,0.24),transparent_28rem)]" />
+    <section id="transformations" className="panel panel-transformations px-5 py-24 md:px-14">
+      <div className="transformation-glow absolute right-0 top-0 h-full w-1/2" />
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-10 md:grid-cols-[.8fr_1.2fr]">
         <Reveal>
-          <span className="text-xs uppercase tracking-[0.42em] text-lilac">Signature transformations</span>
+          <span className="text-xs uppercase tracking-[0.42em] text-lilac">{copy.transformations.eyebrow}</span>
           <CinematicHeading
-            text="Soft glamour, sharpened by precision."
+            text={copy.transformations.title}
             className="serif mt-6 max-w-3xl text-6xl font-light leading-[0.88] text-pearl md:text-8xl"
           />
         </Reveal>
         <Reveal delay={0.12}>
           <div className="grid gap-4 md:grid-cols-3">
-            {["Radiant skin", "Sculpted eyes", "Polished finish"].map((item, index) => (
+            {copy.transformations.items.map((item, index) => (
               <motion.div
-                key={item}
+                key={item.title}
                 className="glass-line min-h-80 p-7 transition hover:-translate-y-2 hover:border-rose/36 hover:bg-pearl/10"
                 initial={{ opacity: 0, y: 42, scale: 0.96 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -416,10 +623,9 @@ function TransformationsPanel() {
                 transition={{ duration: 0.78, delay: index * 0.09, ease: [0.19, 1, 0.22, 1] }}
               >
                 <span className="serif text-7xl text-rose/70">0{index + 1}</span>
-                <h3 className="mt-14 text-2xl font-medium text-pearl">{item}</h3>
+                <h3 className="mt-14 text-2xl font-medium text-pearl">{item.title}</h3>
                 <p className="mt-4 leading-7 text-pearl/62">
-                  Editorial beauty language translated into wearable confidence
-                  for events, everyday rituals and personal reinvention.
+                  {item.body}
                 </p>
               </motion.div>
             ))}
@@ -431,22 +637,23 @@ function TransformationsPanel() {
 }
 
 function ServicesPanel() {
+  const copy = useCopy();
+
   return (
     <section id="services" className="panel px-5 py-24 md:px-14">
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[1fr_.95fr]">
         <Reveal>
           <CinematicHeading
-            text="Beauty services with a campaign-level finish."
+            text={copy.services.title}
             className="serif text-6xl font-light leading-[0.9] text-pearl md:text-8xl"
           />
           <p className="mt-8 max-w-xl text-lg leading-8 text-pearl/68">
-            A focused menu for women who want the experience to feel calm, the
-            result to feel polished, and the atmosphere to feel quietly rare.
+            {copy.services.body}
           </p>
         </Reveal>
         <Reveal delay={0.1}>
           <div className="divide-y divide-pearl/12 border-y border-pearl/12">
-            {services.map((service, index) => (
+            {copy.services.items.map((service, index) => (
               <motion.div
                 key={service}
                 className="group flex items-center justify-between py-6"
@@ -467,8 +674,10 @@ function ServicesPanel() {
 }
 
 function StudioPanel() {
+  const copy = useCopy();
+
   return (
-    <section id="studio" className="panel bg-[#170817] px-5 py-24 md:px-14">
+    <section id="studio" className="panel panel-studio px-5 py-24 md:px-14">
       <div className="absolute inset-8 border border-pearl/10" />
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[.8fr_1.2fr]">
         <Reveal>
@@ -477,12 +686,10 @@ function StudioPanel() {
             whileHover={{ y: -8, scale: 1.015 }}
             transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
           >
-            <p className="text-xs uppercase tracking-[0.38em] text-rose">Owner</p>
-            <h2 className="serif mt-5 text-6xl font-light text-pearl">Tijana Marković</h2>
+            <p className="text-xs uppercase tracking-[0.38em] text-rose">{copy.studio.eyebrow}</p>
+            <h2 className="serif mt-5 text-6xl font-light text-pearl">{copy.studio.owner}</h2>
             <p className="mt-7 leading-8 text-pearl/68">
-              The studio is led with a refined eye for proportion, glow and
-              feminine confidence. The feeling is personal, elevated and never
-              rushed.
+              {copy.studio.body}
             </p>
           </motion.div>
         </Reveal>
@@ -500,10 +707,10 @@ function StudioPanel() {
               fill
               className="object-cover object-right"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,8,23,0.14),rgba(23,8,23,0.72))]" />
+            <div className="studio-image-veil absolute inset-0" />
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between border-t border-pearl/16 pt-5 text-xs uppercase tracking-[0.32em] text-pearl/66">
-              <span>Private beauty studio</span>
-              <span>Novi Sad</span>
+              <span>{copy.studio.captionLeft}</span>
+              <span>{copy.studio.captionRight}</span>
             </div>
           </motion.div>
         </Reveal>
@@ -513,22 +720,24 @@ function StudioPanel() {
 }
 
 function GalleryPanel() {
+  const copy = useCopy();
+
   return (
     <section className="panel px-5 py-24 md:px-14">
       <div className="relative min-h-[calc(100vh-12rem)]">
         <Reveal>
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <CinematicHeading
-              text="The feed should feel like a beauty magazine."
+              text={copy.gallery.title}
               className="serif max-w-4xl text-6xl font-light leading-[0.9] text-pearl md:text-8xl"
             />
             <a href="https://www.instagram.com/" className="inline-flex w-fit items-center gap-3 text-sm uppercase tracking-[0.28em] text-rose">
-              <Instagram size={18} /> Instagram
+              <Instagram size={18} /> {copy.gallery.instagram}
             </a>
           </div>
         </Reveal>
         <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-6">
-          {gallery.map((item, index) => (
+          {copy.gallery.items.map((item, index) => (
             <motion.div
               key={item}
               initial={{ opacity: 0, y: 28 }}
@@ -555,6 +764,8 @@ function GalleryPanel() {
 }
 
 function BlowdryRevealPanel() {
+  const copy = useCopy();
+
   return (
     <section id="blowdry" className="reveal-gap relative h-screen flex-[0_0_60vw] overflow-hidden px-10 py-24 max-[900px]:hidden">
       <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-ink to-transparent" />
@@ -562,10 +773,10 @@ function BlowdryRevealPanel() {
       <div className="relative z-10 flex h-full items-end justify-end">
         <div className="max-w-md border-r border-rose/28 pr-7 text-right">
           <p className="text-xs uppercase tracking-[0.42em] text-rose/80">
-            Beauty in motion
+            {copy.blowdry.eyebrow}
           </p>
           <CinematicHeading
-            text="Salon air, silk movement, rose light."
+            text={copy.blowdry.title}
             className="serif mt-5 text-5xl font-light leading-[0.88] text-pearl md:text-7xl"
           />
         </div>
@@ -575,18 +786,20 @@ function BlowdryRevealPanel() {
 }
 
 function TestimonialsPanel() {
+  const copy = useCopy();
+
   return (
-    <section className="panel bg-[linear-gradient(135deg,#260b29,#09030a)] px-5 py-24 md:px-14">
+    <section className="panel panel-testimonials px-5 py-24 md:px-14">
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-8 md:grid-cols-[.7fr_1.3fr]">
         <Reveal>
-          <span className="text-xs uppercase tracking-[0.42em] text-lilac">Client notes</span>
+          <span className="text-xs uppercase tracking-[0.42em] text-lilac">{copy.testimonials.eyebrow}</span>
           <CinematicHeading
-            text="Quiet proof, glowing after."
+            text={copy.testimonials.title}
             className="serif mt-6 text-6xl font-light leading-[0.9] text-pearl md:text-8xl"
           />
         </Reveal>
         <div className="grid gap-5">
-          {testimonials.map((quote, index) => (
+          {copy.testimonials.items.map((quote, index) => (
             <Reveal key={quote} delay={index * 0.08}>
               <motion.blockquote
                 className="glass-line p-8"
@@ -609,21 +822,22 @@ function TestimonialsPanel() {
 }
 
 function ExperiencePanel() {
+  const copy = useCopy();
+
   return (
     <section className="panel px-5 py-24 md:px-14">
       <div className="absolute left-1/2 top-1/2 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose/15 blur-3xl" />
       <div className="relative flex min-h-[calc(100vh-12rem)] items-center justify-center text-center">
         <Reveal>
           <p className="mx-auto mb-8 max-w-xl text-xs uppercase tracking-[0.42em] text-rose">
-            The luxury beauty experience
+            {copy.experience.eyebrow}
           </p>
           <CinematicHeading
-            text="Come in for a service. Leave with a different posture."
+            text={copy.experience.title}
             className="serif mx-auto max-w-6xl text-7xl font-light leading-[0.84] text-pearl md:text-[9rem]"
           />
           <p className="mx-auto mt-9 max-w-2xl text-lg leading-8 text-pearl/66">
-            The space is atmospheric, the pace is composed, and every detail is
-            shaped around the feeling of being beautifully taken care of.
+            {copy.experience.body}
           </p>
         </Reveal>
       </div>
@@ -632,12 +846,14 @@ function ExperiencePanel() {
 }
 
 function BookingPanel() {
+  const copy = useCopy();
+
   return (
-    <section id="booking" className="panel bg-[#100610] px-5 py-24 md:px-14">
+    <section id="booking" className="panel panel-booking px-5 py-24 md:px-14">
       <div className="relative grid min-h-[calc(100vh-12rem)] items-center gap-12 md:grid-cols-[1fr_1fr]">
         <Reveal>
           <CinematicHeading
-            text="Reserve your glow."
+            text={copy.booking.title}
             className="serif text-7xl font-light leading-[0.85] text-pearl md:text-9xl"
           />
         </Reveal>
@@ -650,16 +866,15 @@ function BookingPanel() {
             transition={{ duration: 0.9, delay: 0.12, ease: [0.19, 1, 0.22, 1] }}
           >
             <p className="text-lg leading-8 text-pearl/72">
-              Book a private appointment at Beauty Boom Plus in Novi Sad and
-              step into a softer, more polished version of your beauty ritual.
+              {copy.booking.body}
             </p>
             <div className="mt-10 grid gap-4">
               <a className="group flex items-center justify-between rounded-full bg-pearl px-6 py-5 text-sm font-semibold uppercase tracking-[0.24em] text-ink transition hover:bg-rose" href="tel:+381000000000">
-                <span className="flex items-center gap-3"><CalendarHeart size={18} /> Book appointment</span>
+                <span className="flex items-center gap-3"><CalendarHeart size={18} /> {copy.booking.cta}</span>
                 <ArrowUpRight size={18} className="transition group-hover:-translate-y-1 group-hover:translate-x-1" />
               </a>
               <a className="flex items-center gap-3 rounded-full border border-pearl/14 px-6 py-5 text-sm uppercase tracking-[0.24em] text-pearl/76 transition hover:border-rose hover:text-rose" href="https://maps.google.com/?q=Novi%20Sad%20Serbia">
-                <MapPin size={18} /> Novi Sad, Serbia
+                <MapPin size={18} /> {copy.booking.location}
               </a>
             </div>
           </motion.div>
@@ -670,21 +885,23 @@ function BookingPanel() {
 }
 
 function FooterPanel() {
+  const copy = useCopy();
+
   return (
-    <footer id="contact" className="panel bg-[linear-gradient(135deg,#090309,#2b0d2f)] px-5 py-24 md:px-14">
+    <footer id="contact" className="panel panel-footer px-5 py-24 md:px-14">
       <div className="relative flex min-h-[calc(100vh-12rem)] flex-col justify-between">
         <Reveal>
-          <p className="text-xs uppercase tracking-[0.42em] text-lilac">Beauty Boom Plus</p>
+          <p className="text-xs uppercase tracking-[0.42em] text-lilac">{copy.footer.eyebrow}</p>
           <CinematicHeading
-            text="Feminine beauty, made cinematic."
+            text={copy.footer.title}
             className="serif mt-8 max-w-5xl text-7xl font-light leading-[0.84] text-pearl md:text-[10rem]"
           />
         </Reveal>
         <div className="mt-16 grid gap-6 border-t border-pearl/12 pt-8 text-sm uppercase tracking-[0.24em] text-pearl/60 md:grid-cols-4">
-          <span>Owner: Tijana Marković</span>
-          <span>Novi Sad, Serbia</span>
-          <span>Instagram-ready glow</span>
-          <span className="md:text-right">Appointments only</span>
+          <span>{copy.footer.owner}</span>
+          <span>{copy.footer.location}</span>
+          <span>{copy.footer.glow}</span>
+          <span className="md:text-right">{copy.footer.appointment}</span>
         </div>
       </div>
     </footer>
