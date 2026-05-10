@@ -152,9 +152,18 @@ a {
 .gallery-image-treatment {
   z-index: 1;
   background:
-    radial-gradient(circle at 50% 18%, transparent, rgba(17, 7, 18, 0.2) 42%, rgba(17, 7, 18, 0.58)),
-    linear-gradient(180deg, rgba(243, 161, 200, 0.1), rgba(42, 11, 47, 0.24));
+    radial-gradient(circle at 50% 18%, transparent, rgba(17, 7, 18, 0.12) 42%, rgba(17, 7, 18, 0.34)),
+    linear-gradient(180deg, rgba(243, 161, 200, 0.06), rgba(42, 11, 47, 0.12));
   mix-blend-mode: multiply;
+}
+
+.gallery-caption {
+  z-index: 12;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(17, 7, 18, 0.58), rgba(42, 11, 47, 0.24));
+  border-left: 1px solid rgb(var(--color-rose) / 0.42);
+  backdrop-filter: blur(10px);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.62);
 }
 
 .hero-overlay {
@@ -251,6 +260,30 @@ a {
     width: 100%;
     flex-basis: auto;
     overflow: visible;
+  }
+
+  .gallery-frame {
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--color-rose) / 0.12),
+      inset 0 0 34px rgb(var(--color-rose) / 0.16),
+      0 18px 48px rgba(5, 3, 8, 0.42);
+  }
+
+  .gallery-frame::before {
+    background:
+      linear-gradient(120deg, rgba(255, 255, 255, 0.2), transparent 24%, transparent 72%, rgba(243, 161, 200, 0.16)),
+      radial-gradient(circle at 18% 12%, rgba(255, 242, 251, 0.22), transparent 10rem);
+  }
+
+  .gallery-image-treatment {
+    background:
+      radial-gradient(circle at 50% 15%, transparent, rgba(17, 7, 18, 0.16) 34%, rgba(17, 7, 18, 0.48)),
+      linear-gradient(180deg, rgba(243, 161, 200, 0.04), rgba(42, 11, 47, 0.18));
+  }
+
+  .gallery-caption {
+    padding: 0.55rem;
+    background: linear-gradient(135deg, rgba(17, 7, 18, 0.68), rgba(42, 11, 47, 0.34));
   }
 }
 

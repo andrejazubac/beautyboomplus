@@ -594,9 +594,9 @@ export default function BeautyBoomExperience() {
 
 function ParallaxSalonLayer({ progress }: { progress: number }) {
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden md:block">
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <motion.div
-        className="absolute right-[8vw] top-[13vh] h-[72vh] w-[30vw] overflow-hidden opacity-80"
+        className="absolute right-[-18vw] top-[12vh] h-[54vh] w-[72vw] overflow-hidden opacity-35 md:right-[8vw] md:top-[13vh] md:h-[72vh] md:w-[30vw] md:opacity-80"
         animate={{
           x: `${-progress * 18}vw`,
           y: `${Math.sin(progress * Math.PI) * 2}vh`
@@ -846,11 +846,12 @@ function GalleryPanel() {
                   style={{ objectPosition: item.position }}
                 />
                 <div className="gallery-image-treatment absolute inset-0" />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/88 via-ink/12 to-rose/12" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/72 via-ink/10 to-rose/8 md:from-ink/62 md:via-ink/6 md:to-rose/8" />
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/96 via-ink/62 to-transparent" />
                 <div className="pointer-events-none absolute inset-3 border border-pearl/12" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <span className="serif block text-3xl text-pearl">{item.label}</span>
-                  <span className="mt-2 block text-[11px] uppercase leading-5 tracking-[0.22em] text-pearl/64">
+                <div className="gallery-caption absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4">
+                  <span className="serif block text-2xl leading-none text-white md:text-3xl">{item.label}</span>
+                  <span className="mt-2 block text-[9px] uppercase leading-4 tracking-[0.16em] text-white/88 md:text-[11px] md:leading-5 md:tracking-[0.2em] md:text-white/82">
                     {item.context}
                   </span>
                 </div>
