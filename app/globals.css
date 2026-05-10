@@ -282,8 +282,19 @@ a {
   }
 
   .gallery-caption {
+    left: 1rem;
+    right: 1rem;
+    padding: 0.75rem 0.85rem;
+    max-width: calc(100% - 2rem);
+    background: linear-gradient(135deg, rgba(17, 7, 18, 0.7), rgba(42, 11, 47, 0.38));
+  }
+}
+
+@media (min-width: 640px) and (max-width: 900px) {
+  .gallery-caption {
+    left: 0.6rem;
+    right: 0.6rem;
     padding: 0.55rem;
-    background: linear-gradient(135deg, rgba(17, 7, 18, 0.68), rgba(42, 11, 47, 0.34));
   }
 }
 

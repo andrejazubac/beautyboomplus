@@ -821,7 +821,7 @@ function GalleryPanel() {
             </a>
           </div>
         </Reveal>
-        <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-6">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-6 md:gap-3">
           {copy.gallery.items.map((item, index) => (
             <motion.div
               key={item.label}
@@ -850,8 +850,8 @@ function GalleryPanel() {
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/96 via-ink/62 to-transparent" />
                 <div className="pointer-events-none absolute inset-3 border border-pearl/12" />
                 <div className="gallery-caption absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4">
-                  <span className="serif block text-2xl leading-none text-white md:text-3xl">{item.label}</span>
-                  <span className="mt-2 block text-[9px] uppercase leading-4 tracking-[0.16em] text-white/88 md:text-[11px] md:leading-5 md:tracking-[0.2em] md:text-white/82">
+                  <span className="serif block text-[2rem] leading-[0.92] text-white sm:text-2xl md:text-3xl">{item.label}</span>
+                  <span className="mt-2 block text-[10px] uppercase leading-4 tracking-[0.12em] text-white/88 sm:text-[9px] md:text-[11px] md:leading-5 md:tracking-[0.2em] md:text-white/82">
                     {item.context}
                   </span>
                 </div>
