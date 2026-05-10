@@ -69,39 +69,39 @@ const translations = {
       items: [
         {
           label: "Pramenovi",
-          context: "Meki prelazi i dimenzija kose",
-          image: "/beauty-boom-blowdry.png",
-          position: "42% center"
+          context: "Dimenzija, svetlina i mekani prelazi u kosi",
+          image: "/Pramenovi.png",
+          position: "center"
         },
         {
           label: "Boja",
           context: "Sjajna nijansa i salonska završnica",
-          image: "/beauty-boom-campaign.png",
-          position: "34% center"
+          image: "/Boja.png",
+          position: "center"
         },
         {
-          label: "Feniranje",
-          context: "Pokret, volumen i uredna forma",
-          image: "/beauty-boom-blowdry.png",
-          position: "58% center"
+          label: "Lokne",
+          context: "Naglašen oblik, volumen i glamurozan pokret",
+          image: "/Lokne.png",
+          position: "center"
         },
         {
-          label: "Sjaj",
-          context: "Zdrav izgled i uglađena tekstura",
-          image: "/beauty-boom-campaign.png",
-          position: "52% center"
+          label: "Stepenasto",
+          context: "Slojevita forma koja daje lakoću i pokret",
+          image: "/Stepenasto.png",
+          position: "center"
         },
         {
-          label: "Šminka",
-          context: "Mekani glamur za događaje",
-          image: "/beauty-boom-campaign.png",
-          position: "44% center"
+          label: "Talasasto",
+          context: "Meki talasi sa prirodnim, urednim padom",
+          image: "/Talasasto.png",
+          position: "center"
         },
         {
-          label: "Nega",
-          context: "Rituali koji ostavljaju kosu svilenom",
-          image: "/beauty-boom-blowdry.png",
-          position: "68% center"
+          label: "Ljubičasti ton",
+          context: "Talasasta kosa sa smelim ljubičastim karakterom",
+          image: "/TalasastoLjubicasto.png",
+          position: "center"
         }
       ]
     },
@@ -193,39 +193,39 @@ const translations = {
       items: [
         {
           label: "Highlights",
-          context: "Soft transitions and dimensional hair",
-          image: "/beauty-boom-blowdry.png",
-          position: "42% center"
+          context: "Dimension, brightness and soft transitions through the hair",
+          image: "/Pramenovi.png",
+          position: "center"
         },
         {
           label: "Color",
           context: "Glossy tone and salon finish",
-          image: "/beauty-boom-campaign.png",
-          position: "34% center"
+          image: "/Boja.png",
+          position: "center"
         },
         {
-          label: "Blowout",
-          context: "Movement, volume and polished shape",
-          image: "/beauty-boom-blowdry.png",
-          position: "58% center"
+          label: "Curls",
+          context: "Defined shape, volume and glamorous movement",
+          image: "/Lokne.png",
+          position: "center"
         },
         {
-          label: "Glow",
-          context: "Healthy shine and refined texture",
-          image: "/beauty-boom-campaign.png",
-          position: "52% center"
+          label: "Layers",
+          context: "A layered cut that gives softness and motion",
+          image: "/Stepenasto.png",
+          position: "center"
         },
         {
-          label: "Makeup",
-          context: "Soft glamour for special moments",
-          image: "/beauty-boom-campaign.png",
-          position: "44% center"
+          label: "Waves",
+          context: "Soft waves with a natural, polished fall",
+          image: "/Talasasto.png",
+          position: "center"
         },
         {
-          label: "Care",
-          context: "Rituals that leave hair feeling silky",
-          image: "/beauty-boom-blowdry.png",
-          position: "68% center"
+          label: "Purple tone",
+          context: "Wavy hair with a bold violet character",
+          image: "/TalasastoLjubicasto.png",
+          position: "center"
         }
       ]
     },
@@ -603,13 +603,17 @@ function ParallaxSalonLayer({ progress }: { progress: number }) {
         }}
         transition={{ duration: 0.25, ease: "linear" }}
       >
-        <Image
-          src="/beauty-boom-blowdry.png"
-          alt=""
-          fill
-          className="object-cover"
-          priority
-        />
+        <video
+          className="h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/PlavaKosaCover.png"
+        >
+          <source src="/PlavaKosaVideo.mp4" type="video/mp4" />
+        </video>
         <div className="parallax-image-veil absolute inset-0" />
       </motion.div>
       <motion.div
@@ -778,10 +782,10 @@ function StudioPanel() {
             transition={{ duration: 1.05, ease: [0.19, 1, 0.22, 1] }}
           >
             <Image
-              src="/beauty-boom-campaign.png"
-              alt="Beauty Boom Plus glossy studio mood"
+              src="/TijanaFenira.png"
+              alt="Tijana Marković, vlasnica Beauty Boom Plus studija"
               fill
-              className="object-cover object-right"
+              className="object-cover object-center"
             />
             <div className="studio-image-veil absolute inset-0" />
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between border-t border-pearl/16 pt-5 text-xs uppercase tracking-[0.32em] text-pearl/66">
@@ -825,14 +829,14 @@ function GalleryPanel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.22 }}
               transition={{ delay: index * 0.05, duration: 0.7 }}
-              className="group relative aspect-[3/4] overflow-hidden bg-plum"
+              className="group relative aspect-[3/4] overflow-hidden bg-plum p-2"
             >
               <a
                 href={instagramUrl}
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`${copy.gallery.instagram}: ${item.label}`}
-                className="block h-full"
+                className="gallery-frame relative block h-full overflow-hidden"
               >
                 <Image
                   src={item.image}
@@ -841,7 +845,9 @@ function GalleryPanel() {
                   className="object-cover transition duration-700 group-hover:scale-110"
                   style={{ objectPosition: item.position }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/84 via-transparent to-rose/10" />
+                <div className="gallery-image-treatment absolute inset-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/88 via-ink/12 to-rose/12" />
+                <div className="pointer-events-none absolute inset-3 border border-pearl/12" />
                 <div className="absolute bottom-4 left-4 right-4">
                   <span className="serif block text-3xl text-pearl">{item.label}</span>
                   <span className="mt-2 block text-[11px] uppercase leading-5 tracking-[0.22em] text-pearl/64">

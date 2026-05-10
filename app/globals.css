@@ -126,6 +126,37 @@ a {
   backdrop-filter: blur(22px);
 }
 
+.gallery-frame {
+  border: 1px solid rgb(var(--color-pearl) / 0.16);
+  background:
+    linear-gradient(135deg, rgb(var(--color-pearl) / 0.08), rgb(var(--color-rose) / 0.05)),
+    rgb(var(--color-plum) / 0.5);
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--color-rose) / 0.08),
+    inset 0 0 38px rgb(var(--color-rose) / 0.1),
+    0 24px 70px rgba(5, 3, 8, 0.34);
+}
+
+.gallery-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.16), transparent 28%, transparent 72%, rgba(243, 161, 200, 0.12)),
+    radial-gradient(circle at 18% 12%, rgba(255, 242, 251, 0.18), transparent 13rem);
+  mix-blend-mode: soft-light;
+}
+
+.gallery-image-treatment {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 18%, transparent, rgba(17, 7, 18, 0.2) 42%, rgba(17, 7, 18, 0.58)),
+    linear-gradient(180deg, rgba(243, 161, 200, 0.1), rgba(42, 11, 47, 0.24));
+  mix-blend-mode: multiply;
+}
+
 .hero-overlay {
   background:
     radial-gradient(circle at 70% 35%, rgb(var(--color-rose) / 0.08), transparent 24rem),
